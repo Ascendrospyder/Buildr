@@ -3,7 +3,14 @@ import Layout from './(dashboard)/layout';
 import { FetchFormStats, GetFormsFromDB } from '@/actions/form';
 import { LuView } from 'react-icons/lu';
 import { ReactNode, Suspense } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { IoIosSend } from 'react-icons/io';
 import { FaBalanceScaleLeft } from 'react-icons/fa';
@@ -12,6 +19,11 @@ import { Separator } from '@/components/ui/separator';
 import CreateFormBtn from '@/components/CreateFormBtn';
 import { Form } from '@prisma/client';
 import { Badge } from '@/components/ui/badge';
+import { formatDistance } from 'date-fns';
+import { Button } from '@/components/ui/button';
+import { IoEye } from 'react-icons/io5';
+import { FaEdit } from 'react-icons/fa';
+import Link from 'next/link';
 
 interface StatsCardProps {
   data?: Awaited<ReturnType<typeof FetchFormStats>>;
@@ -157,10 +169,40 @@ const FormCard = ({ form }: { form: Form }) => {
             </Badge>
           )}
         </CardTitle>
+        <CardDescription className='flex items-center justify-between text-muted-foreground text-sm'>
+          {formatDistance(form.createdAt, new Date(), {
+            addSuffix: true,
+          })}
+
+          {!form.published && (
+            <span className='flex items-center gap-2 py-1'>
+              <LuView className='text-purple-600' />
+              <span>{form.numVisits.toLocaleString()}</span>
+              <IoIosSend className='text-pink-600' />
+              <span>{form.submissions.toLocaleString()}</span>
+            </span>
+          )}
+        </CardDescription>
       </CardHeader>
-      <CardContent>
-        <p>Card Content</p>
+      <CardContent className='h-[25px] truncate text-lg text-muted-foreground'>
+        {form.description || 'No description was added!'}
       </CardContent>
+      <CardFooter>
+        {form.published && (
+          <Button asChild className='w-full my-2 text-md gap-5'>
+            <Link href={`/forms/${form.id}`}>
+              View Submissions <IoEye className='text-white' />
+            </Link>
+          </Button>
+        )}
+        {!form.published && (
+          <Button asChild className='w-full my-2 text-md gap-5 bg-[#bc0a63]'>
+            <Link href={`/buildr/${form.id}`}>
+              Edit Form <FaEdit className='text-white' />
+            </Link>
+          </Button>
+        )}
+      </CardFooter>
     </Card>
   );
 };
