@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -15,7 +15,6 @@ import { TbBulb } from 'react-icons/tb';
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -23,7 +22,6 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
 import { useForm } from 'react-hook-form';
 import { Textarea } from './ui/textarea';
 import { ImSpinner2 } from 'react-icons/im';
@@ -43,6 +41,12 @@ function CreateFormBtn() {
   });
   const { theme } = useTheme();
   const isDarkTheme = theme === 'dark';
+  const [isMounted, setIsMounted] = useState(false);
+  const htmlClass = isDarkTheme && isMounted ? 'text-white' : 'text-black';
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const handleSubmit = async (values: formSchemaType) => {
     try {
@@ -66,18 +70,18 @@ function CreateFormBtn() {
     <Dialog>
       <DialogTrigger asChild>
         <Button
-          className={`group border border-primary/20 h-[190px] w-[400px] items-center justify-center flex flex-col hover:border-primary hover:cursor-pointer border-dashed gap-4 bg-background ${
-            isDarkTheme ? 'text-white' : 'text-black'
+          className={`group border border-primary/20 h-[190px] items-center justify-center flex flex-col hover:border-primary hover:cursor-pointer border-dashed gap-4 bg-background ${
+            isDarkTheme && isMounted ? 'text-white' : 'text-black'
           }`}
         >
           <BsFilePlusFill
             className={`h-8 w-8 group-hover:text-grey-100 ${
-              isDarkTheme ? 'text-white' : 'text-black'
+              isDarkTheme && isMounted ? 'text-white' : 'text-black'
             }`}
           />
           <p
             className={`font-bold text-xl group-hover:text-grey-500 ${
-              isDarkTheme ? 'text-white' : 'text-black'
+              isDarkTheme && isMounted ? 'text-white' : 'text-black'
             }`}
           >
             Create New Form
