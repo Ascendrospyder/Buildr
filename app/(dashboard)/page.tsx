@@ -21,7 +21,7 @@ import { IoIosSend } from 'react-icons/io';
 import { IoEye } from 'react-icons/io5';
 import { LuView } from 'react-icons/lu';
 import { MdDoNotTouch } from 'react-icons/md';
-import Layout from './(dashboard)/layout';
+import Layout from './layout';
 
 interface StatsCardProps {
   data?: Awaited<ReturnType<typeof FetchFormStats>>;
@@ -30,26 +30,24 @@ interface StatsCardProps {
 
 export default function Home() {
   return (
-    <Layout>
-      <div className='container pt-4'>
-        <Suspense fallback={<StatCard loading={true} />}>
-          <CardStatsWrapper />
+    <div className='container pt-4'>
+      <Suspense fallback={<StatCard loading={true} />}>
+        <CardStatsWrapper />
+      </Suspense>
+      <Separator className='my-6'></Separator>
+      <h2 className='text-4xl font-bold col-span-2'>Your Existing Forms</h2>
+      <Separator className='my-6'></Separator>
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+        <CreateFormBtn />
+        <Suspense
+          fallback={[1, 2, 3, 4].map((elements) => (
+            <FormCardSkeleton key={elements} />
+          ))}
+        >
+          <FormCards />
         </Suspense>
-        <Separator className='my-6'></Separator>
-        <h2 className='text-4xl font-bold col-span-2'>Your Existing Forms</h2>
-        <Separator className='my-6'></Separator>
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-          <CreateFormBtn />
-          <Suspense
-            fallback={[1, 2, 3, 4].map((elements) => (
-              <FormCardSkeleton key={elements} />
-            ))}
-          >
-            <FormCards />
-          </Suspense>
-        </div>
       </div>
-    </Layout>
+    </div>
   );
 }
 

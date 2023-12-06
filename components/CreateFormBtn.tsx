@@ -29,6 +29,7 @@ import { ImSpinner2 } from 'react-icons/im';
 import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
 import { toast } from './ui/use-toast';
+import { useRouter } from 'next/navigation';
 
 function CreateFormBtn() {
   const form = useForm<formSchemaType>({
@@ -41,7 +42,7 @@ function CreateFormBtn() {
   const { theme } = useTheme();
   const isDarkTheme = theme === 'dark';
   const [isMounted, setIsMounted] = useState(false);
-  const htmlClass = isDarkTheme && isMounted ? 'text-white' : 'text-black';
+  const router = useRouter();
 
   useEffect(() => {
     setIsMounted(true);
@@ -50,7 +51,7 @@ function CreateFormBtn() {
   const handleSubmit = async (values: formSchemaType) => {
     try {
       const formId = await CreateForm(values);
-      console.log(formId);
+      router.push(`/buildr/${formId}`);
       toast({
         title: 'Congrats',
         description: 'Form successfully created!',
