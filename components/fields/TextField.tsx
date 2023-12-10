@@ -1,9 +1,40 @@
 'use client';
 
-import { ElementsType, FormElement } from '../FormElements';
+import {
+  ElementsType,
+  FormElement,
+  FormElementInstance,
+} from '../FormElements';
 import { MdTextFields } from 'react-icons/md';
+import { Label } from '../ui/label';
+import { Input } from '../ui/input';
 
 const type: ElementsType = 'TextField';
+
+const DesignerComponent = ({
+  elementInstance,
+}: {
+  elementInstance: FormElementInstance;
+}) => {
+  return (
+    <div className='flex flex-col gap-2 w-full'>
+      <Label>
+        {elementInstance.extraAttributes?.label}
+        {elementInstance.extraAttributes?.required && '*'}
+      </Label>
+      <Input
+        readOnly
+        disabled
+        placeholder={elementInstance.extraAttributes?.placeHolder}
+      />
+      {elementInstance.extraAttributes?.helperText && (
+        <p className='text-muted-foreground text-[0.8rem]'>
+          {elementInstance.extraAttributes?.helperText}
+        </p>
+      )}
+    </div>
+  );
+};
 
 export const TextFieldFormElement: FormElement = {
   type,
@@ -21,7 +52,7 @@ export const TextFieldFormElement: FormElement = {
     icon: MdTextFields,
     label: 'Text Field',
   },
-  designerComponent: () => <div>Text Design</div>,
+  designerComponent: DesignerComponent,
   formComponent: () => <div>Form Design</div>,
   propertiesComponent: () => <div>Properties Design</div>,
 };

@@ -10,9 +10,11 @@ export type FormElement = {
   designerBtnElement: {
     icon: React.ElementType;
     label: string;
-  }
+  };
 
-  designerComponent: React.FC;
+  designerComponent: React.FC<{
+    elementInstance: FormElementInstance;
+  }>;
   formComponent: React.FC;
   propertiesComponent: React.FC;
 };
@@ -21,7 +23,7 @@ export type FormElementInstance = {
   id: string;
   type: ElementsType;
   extraAttributes?: Record<string, any>;
-}
+};
 
 type FormElementsType = {
   [key in ElementsType]: FormElement;
