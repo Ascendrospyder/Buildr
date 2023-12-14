@@ -20,7 +20,10 @@ import { Button } from './ui/button';
 import { FaTrashAlt } from 'react-icons/fa';
 
 function Designer() {
-  const { elements, addElement } = useDesigner();
+  const { elements, addElement, selectedElement, setSelectedElement } =
+    useDesigner();
+
+  console.log(useDesigner());
 
   const droppable = useDroppable({
     id: 'design-drop-area',
@@ -50,7 +53,12 @@ function Designer() {
 
   return (
     <div className='flex w-full h-full'>
-      <div className='p-4 w-full'>
+      <div className='p-4 w-full'
+      onClick={(e) => {
+        // the moment I click on an element set it to null in case I click
+        // outside the box
+        if (selectedElement) setSelectedElement(null);
+      }}>
         <div
           ref={droppable.setNodeRef}
           className={cn(
@@ -63,7 +71,7 @@ function Designer() {
               Drop Here
             </div>
           )}
-          {droppable.isOver && (
+          {droppable.isOver && elements.length === 0 && (
             <div className='p-4 w-full'>
               <div className='h-[120px] rounded-md bg-primary/20'></div>
             </div>
@@ -71,7 +79,12 @@ function Designer() {
           {elements.length > 0 && (
             <div className='flex flex-col w-full p-4 gap-2'>
               {elements.map((element) => (
-                <DesignerElementWrapper key={element.id} element={element} />
+                <DesignerElementWrapper
+                  key={element.id}
+                  element={element}
+                  selectedElement={selectedElement}
+                  setSelectedElement={setSelectedElement}
+                />
               ))}
             </div>
           )}
@@ -84,8 +97,12 @@ function Designer() {
 
 const DesignerElementWrapper = ({
   element,
+  selectedElement,
+  setSelectedElement,
 }: {
   element: FormElementInstance;
+  selectedElement: FormElementInstance | null;
+  setSelectedElement: (element: FormElementInstance | null) => void;
 }) => {
   const [mouseIsOver, setMouseIsOver] = useState(false);
   const DesignerElement = FormElements[element.type].designerComponent;
@@ -127,6 +144,10 @@ const DesignerElementWrapper = ({
       className='relative h-[120px] flex flex-col text-foreground hover:cursor-pointer rounded-md ring-1 ring-accent ring-inset'
       onMouseOver={() => setMouseIsOver(true)}
       onMouseLeave={() => setMouseIsOver(false)}
+      onClick={(event) => {
+        event.stopPropagation();
+        setSelectedElement(element);
+      }}
     >
       <div
         ref={topHalfDroppable.setNodeRef}
@@ -142,7 +163,8 @@ const DesignerElementWrapper = ({
             <Button
               variant={'outline'}
               className='flex justify-center items-center h-full border rounded-md rounded-l-none bg-red-500'
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 removeElement(element.id);
               }}
             >
@@ -150,7 +172,7 @@ const DesignerElementWrapper = ({
             </Button>
           </div>
           <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse'>
-            <p className='text-white text-sm'>
+            <p className='text-muted-foreground text-sm'>
               Click for properties or drag to move around
             </p>
           </div>
@@ -159,7 +181,9 @@ const DesignerElementWrapper = ({
       <div
         className={cn(
           'flex w-full h-[120px] items-center rounded-md bg-accent/40 px-4 py-2 pointer-events-none opacity-100',
-          mouseIsOver && 'opacity-40 blur-sm'
+          mouseIsOver && 'opacity-40 blur-sm',
+          topHalfDroppable.isOver && 'border-t-4 border-t-foreground',
+          bottomHalfDroppable.isOver && 'border-t-4 border-t-foreground'
         )}
       >
         <DesignerElement elementInstance={element} />

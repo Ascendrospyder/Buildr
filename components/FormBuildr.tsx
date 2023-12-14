@@ -8,12 +8,35 @@ import PreviewDialogBtn from './PreviewDialogBtn';
 import SaveFormBtn from './SaveFormBtn';
 import PublishFormBtn from './PublishFormBtn';
 import Designer from './Designer';
-import { DndContext } from '@dnd-kit/core';
+import {
+  DndContext,
+  MouseSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
 import DraggableOverlayWrapper from './DraggableOverlayWrapper';
 
 function FormBuildr({ form }: { form: Form }) {
+  // The following code creates a sensor for at least 10px to be
+  // recognised as a drag and drop, this allows us to click the delete
+  // design element button
+  const mouseSensor = useSensor(MouseSensor, {
+    activationConstraint: {
+      distance: 10,
+    },
+  });
+
+  const touchSensor = useSensor(TouchSensor, {
+    activationConstraint: {
+      delay: 300,
+      tolerance: 5,
+    },
+  });
+
+  const sensors = useSensors(mouseSensor, touchSensor);
   return (
-    <DndContext>
+    <DndContext sensors={sensors}>
       <main className='flex flex-col w-full'>
         <nav className='flex justify-between border-b-2 p-4 gap-3 items-center'>
           <h2 className='truncate font-medium'>
