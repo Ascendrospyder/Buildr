@@ -13,7 +13,7 @@ function PropertiesElementsSideBar() {
 
   return (
     <div className='flex flex-col p-2'>
-      <div className='flex justify-between items-center'>
+      <div className='flex justify-between items-center mb-2'>
         <p className='text-md text-muted-foreground animate-pulse'>
           Element Properties
         </p>

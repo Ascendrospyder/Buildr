@@ -20,10 +20,13 @@ import { Button } from './ui/button';
 import { FaTrashAlt } from 'react-icons/fa';
 
 function Designer() {
-  const { elements, addElement, selectedElement, setSelectedElement } =
-    useDesigner();
-
-  console.log(useDesigner());
+  const {
+    elements,
+    addElement,
+    selectedElement,
+    setSelectedElement,
+    removeElement,
+  } = useDesigner();
 
   const droppable = useDroppable({
     id: 'design-drop-area',
@@ -39,13 +42,90 @@ function Designer() {
       if (!active || !over) return;
 
       const isDesignerBtnElement = active.data?.current?.isDesignerBtnElement;
+      const isDroppingOverDesignDropArea =
+        over.data?.current?.isDesignerDropArea;
 
-      if (isDesignerBtnElement) {
+      // scenario 1: where I add element into the drop zone but not between
+      if (isDesignerBtnElement && isDroppingOverDesignDropArea) {
         const type = active.data?.current?.type;
         const newElement = FormElements[type as ElementsType].construct(
           idGenerator()
         );
-        addElement(0, newElement);
+
+        // initially dropping at first position however should be at last pos
+        addElement(elements.length, newElement);
+        return;
+      }
+
+      // scenario 2: where I have to place a field in between existing design elements
+      // this could be either top or bottom
+      const isDroppingOverDesignElementTop =
+        over.data?.current?.isTopHalfDesignerElement;
+      const isDroppingOverDesignElementBottom =
+        over.data?.current?.isBottomHalfDesignerElement;
+
+      if (
+        isDesignerBtnElement &&
+        (isDroppingOverDesignElementTop || isDroppingOverDesignElementBottom)
+      ) {
+        console.log('Is this getting called?');
+        const type = active.data?.current?.type;
+        const newElement = FormElements[type as ElementsType].construct(
+          idGenerator()
+        );
+
+        const overId = over.data?.current?.elementId;
+        const overElementIdx = elements.findIndex((el) => el.id === overId);
+
+        if (overElementIdx === -1) {
+          throw new Error('Element was not found');
+        }
+
+        // lets inititally set idx to the top half, however if its at the
+        // bottom just minus 1 to the index
+        let idx = overElementIdx;
+
+        if (isDroppingOverDesignElementBottom) {
+          idx = overElementIdx - 1;
+        }
+
+        addElement(idx, newElement);
+      }
+
+      // scenario 3: dragging an existing element on to the top or bottom
+      // TODO: Fix the issue where dragging to move elements existing in the drag and drop zone
+      const isDraggingDesignerElement = active.data?.current?.isDesignerElement;
+
+      if (
+        (isDroppingOverDesignElementTop || isDroppingOverDesignElementBottom) &&
+        isDraggingDesignerElement
+      ) {
+        const activeId = active.data?.current?.elementId;
+        const overId = over.data?.current?.elementId;
+
+        const activeElementIdx = elements.findIndex((el) => el.id === activeId);
+        const overElementIdx = elements.findIndex((el) => el.id === overId);
+
+        if (activeElementIdx === -1 || overElementIdx === -1) {
+          throw new Error('Element not found');
+        }
+
+        const currentActiveElements = { ...elements[activeElementIdx] };
+        removeElement(activeId);
+
+        // console.log(
+        //   'dropping at bottom = ' + isDroppingOverDesignElementBottom
+        // );
+        // console.log('dropping at top = ' + isDroppingOverDesignElementTop);
+
+        // lets inititally set idx to the top half, however if its at the
+        // bottom just minus 1 to the index
+        let idx = overElementIdx;
+        if (isDroppingOverDesignElementBottom) {
+          idx = overElementIdx + 1;
+        }
+
+        addElement(idx, currentActiveElements);
       }
     },
   });
@@ -53,17 +133,19 @@ function Designer() {
 
   return (
     <div className='flex w-full h-full'>
-      <div className='p-4 w-full'
-      onClick={(e) => {
-        // the moment I click on an element set it to null in case I click
-        // outside the box
-        if (selectedElement) setSelectedElement(null);
-      }}>
+      <div
+        className='p-4 w-full'
+        onClick={(e) => {
+          // the moment I click on an element set it to null in case I click
+          // outside the box
+          if (selectedElement) setSelectedElement(null);
+        }}
+      >
         <div
           ref={droppable.setNodeRef}
           className={cn(
             'bg-background max-w-[920px] h-full m-auto rounded-xl flex flex-col flex-grow items-center justify-start flex-1 overflow-y-auto',
-            droppable.isOver && 'ring-2 ring-primary/20'
+            droppable.isOver && 'ring-4 ring-primary/50'
           )}
         >
           {!droppable.isOver && elements.length === 0 && (

@@ -38,6 +38,7 @@ export default function DesignerContextProvider({
       return newElements;
     });
   };
+  
   const removeElement = (id: string) => {
     setElements((prev) => prev.filter((element) => element.id !== id));
   };
