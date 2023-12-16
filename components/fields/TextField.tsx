@@ -199,6 +199,27 @@ const PropertiesComponent = ({
   );
 };
 
+const FormComponent = ({
+  elementInstance,
+}: {
+  elementInstance: FormElementInstance;
+}) => {
+  return (
+    <div className='flex flex-col gap-2 w-full'>
+      <Label>
+        {elementInstance.extraAttributes?.label}
+        {elementInstance.extraAttributes?.required && '*'}
+      </Label>
+      <Input placeholder={elementInstance.extraAttributes?.placeHolder} />
+      {elementInstance.extraAttributes?.helperText && (
+        <p className='text-muted-foreground text-[0.8rem]'>
+          {elementInstance.extraAttributes?.helperText}
+        </p>
+      )}
+    </div>
+  );
+};
+
 export const TextFieldFormElement: FormElement = {
   type,
   construct: (id: string) => ({
@@ -216,6 +237,6 @@ export const TextFieldFormElement: FormElement = {
     label: 'Text Field',
   },
   designerComponent: DesignerComponent,
-  formComponent: () => <div>Form Design</div>,
+  formComponent: FormComponent,
   propertiesComponent: PropertiesComponent,
 };
