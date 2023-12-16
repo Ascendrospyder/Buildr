@@ -98,7 +98,27 @@ export const GetFormFromDbId = async (id: number) => {
   return await prisma.form.findUnique({
     where: {
       userId: user.id,
-      id
-    }
-  })
-}
+      id,
+    },
+  });
+};
+
+export const UpdateFormContentDb = async (id: number, data: string) => {
+  const user = await currentUser();
+
+  if (!user) {
+    throw new UserNotFoundErr();
+  }
+
+  // once we have the new json data go ahead an make an update to the backend
+  // database
+  return await prisma.form.update({
+    where: {
+      userId: user.id,
+      id,
+    },
+    data: {
+      content: data,
+    },
+  });
+};
