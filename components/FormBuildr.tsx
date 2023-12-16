@@ -1,7 +1,7 @@
 'use client';
 
 import { formSchemaType } from '@/schemas/form';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from './ui/button';
 import { Form } from '@prisma/client';
 import PreviewDialogBtn from './PreviewDialogBtn';
@@ -16,8 +16,14 @@ import {
   useSensors,
 } from '@dnd-kit/core';
 import DraggableOverlayWrapper from './DraggableOverlayWrapper';
+import useDesigner from './hooks/useDesigner';
+import Loading from '@/app/(dashboard)/buildr/[id]/loading';
 
 function FormBuildr({ form }: { form: Form }) {
+  const { setElements } = useDesigner();
+  // TODO: Maybe in the near future go ahead and think of a way to prevent delay
+  const [isDataFetched, setIsDataFetched] = useState(false);
+
   // The following code creates a sensor for at least 10px to be
   // recognised as a drag and drop, this allows us to click the delete
   // design element button
@@ -33,6 +39,13 @@ function FormBuildr({ form }: { form: Form }) {
       tolerance: 5,
     },
   });
+
+  // pull existing form components from the db to show existing
+  // components if editing a form
+  useEffect(() => {
+    const elements = JSON.parse(form.content); // parse existing content in db
+    setElements(elements);
+  }, [form, setElements]);
 
   const sensors = useSensors(mouseSensor, touchSensor);
   return (
