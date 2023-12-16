@@ -186,7 +186,7 @@ const FormCard = ({ form }: { form: Form }) => {
       <CardFooter>
         {form.published && (
           <Button asChild className='w-full my-2 text-md gap-5'>
-            <Link href={`/forms/${form.id}`}>
+            <Link href={`/buildr/${form.id}`}>
               View Submissions <IoEye className='text-white' />
             </Link>
           </Button>

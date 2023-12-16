@@ -18,6 +18,13 @@ import {
 import DraggableOverlayWrapper from './DraggableOverlayWrapper';
 import useDesigner from './hooks/useDesigner';
 import Loading from '@/app/(dashboard)/buildr/[id]/loading';
+import { Input } from './ui/input';
+import { FaCopy } from 'react-icons/fa6';
+import { toast } from './ui/use-toast';
+import Link from 'next/link';
+import { IoIosArrowRoundBack } from 'react-icons/io';
+import { IoIosArrowRoundForward } from 'react-icons/io';
+import Confetti from 'react-confetti';
 
 function FormBuildr({ form }: { form: Form }) {
   const { setElements } = useDesigner();
@@ -48,6 +55,71 @@ function FormBuildr({ form }: { form: Form }) {
   }, [form, setElements]);
 
   const sensors = useSensors(mouseSensor, touchSensor);
+
+  const shareUrl = `${window.location.origin}/publish/${form.shareURL}`;
+
+  // if the form is published show a different UI
+  if (form.published) {
+    return (
+      <>
+        <Confetti
+          width={window.innerWidth}
+          height={window.innerHeight}
+          recycle={false}
+        />
+        <div className='flex flex-col items-center justify-center h-full w-full '>
+          <div className='max-w-md'>
+            <h1 className='text-center text-4xl font-bold text-[#bc0a63] border-b pb-2 mb-10'>
+              Your Form Was Published 🕺🎉🥳
+            </h1>
+            <h2 className='text-2xl font-semibold text-center'>
+              Don&apos;t be shy, share this form!
+            </h2>
+            <h3 className='text-lg text-muted-foreground border-b pb-6 pt-2'>
+              Anyone with this link can view and submit the form!
+            </h3>
+            <div className='my-4 flex flex-col gap-2 items-center w-full border-b pb-4'>
+              <Input readOnly value={shareUrl} />
+              <Button
+                className='mt-2 w-full bg-[#bc0a63]'
+                onClick={() => {
+                  navigator.clipboard.writeText(shareUrl);
+                  toast({
+                    title: 'Successfully copied url to clipboard 🥳',
+                  });
+                }}
+              >
+                Copy Link <FaCopy className='ml-2 w-4 h-4' />
+              </Button>
+            </div>
+            <div className='flex justify-between'>
+              <Button
+                variant={'link'}
+                asChild
+                className='text-[#bc0a63] text-md font-semibold'
+              >
+                <Link href={'/'} className='gap-2'>
+                  <IoIosArrowRoundBack className='w-7 h-7' />
+                  Go Back Home
+                </Link>
+              </Button>
+              <Button
+                variant={'link'}
+                asChild
+                className='text-[#bc0a63] text-md font-semibold'
+              >
+                <Link href={`/forms/${form.id}`} className='gap-2'>
+                  Form Details
+                  <IoIosArrowRoundForward className='w-7 h-7' />
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
   return (
     <DndContext sensors={sensors}>
       <main className='flex flex-col w-full'>
