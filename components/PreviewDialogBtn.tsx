@@ -15,7 +15,7 @@ import { FormElements } from './FormElements';
 
 function PreviewDialogBtn() {
   const { elements } = useDesigner();
-  console.log(elements);
+
   return (
     <Dialog>
       <DialogTrigger>
