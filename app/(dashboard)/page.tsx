@@ -56,7 +56,7 @@ const CardStatsWrapper = async () => {
   return <StatsCard isLoading={false} data={stats} />;
 };
 
-const StatsCard = (props: StatsCardProps) => {
+export const StatsCard = (props: StatsCardProps) => {
   const { data, isLoading } = props;
 
   return (
@@ -100,7 +100,7 @@ const StatsCard = (props: StatsCardProps) => {
   );
 };
 
-const StatCard = ({
+export const StatCard = ({
   title,
   icon,
   helperText,

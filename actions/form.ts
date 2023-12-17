@@ -123,7 +123,7 @@ export const UpdateFormContentDb = async (id: number, data: string) => {
   });
 };
 
-export const PublishFormDb = async (id : number) => {
+export const PublishFormDb = async (id: number) => {
   const user = await currentUser();
 
   if (!user) {
@@ -132,11 +132,33 @@ export const PublishFormDb = async (id : number) => {
 
   return await prisma.form.update({
     data: {
-      published: true
+      published: true,
     },
     where: {
       userId: user.id,
-      id
-    }
-  })
+      id,
+    },
+  });
+};
+
+export const GetFormContentByUrl = async (formUrl: string) => {
+  const user = await currentUser();
+
+  if (!user) {
+    throw new UserNotFoundErr();
+  }
+
+  return await prisma.form.update({
+    select: {
+      content: true,
+    },
+    data: {
+      numVisits: {
+        increment: 1,
+      },
+    },
+    where: {
+      shareURL: formUrl,
+    },
+  });
 };

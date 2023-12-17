@@ -56,7 +56,7 @@ function FormBuildr({ form }: { form: Form }) {
 
   const sensors = useSensors(mouseSensor, touchSensor);
 
-  const shareUrl = `${window.location.origin}/publish/${form.shareURL}`;
+  const shareUrl = `${window.location.origin}/submit/${form.shareURL}`;
 
   // if the form is published show a different UI
   if (form.published) {
