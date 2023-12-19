@@ -4,6 +4,7 @@ import {
   ElementsType,
   FormElement,
   FormElementInstance,
+  SubmitFunction,
 } from '../FormElements';
 import { MdTextFields } from 'react-icons/md';
 import { Label } from '../ui/label';
@@ -11,7 +12,7 @@ import { Input } from '../ui/input';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import useDesigner from '../hooks/useDesigner';
 import {
   Form,
@@ -201,16 +202,29 @@ const PropertiesComponent = ({
 
 const FormComponent = ({
   elementInstance,
+  submitValues,
 }: {
   elementInstance: FormElementInstance;
+  submitValues?: SubmitFunction;
 }) => {
+  const [value, setValue] = useState('');
+
   return (
     <div className='flex flex-col gap-2 w-full'>
       <Label>
         {elementInstance.extraAttributes?.label}
         {elementInstance.extraAttributes?.required && '*'}
       </Label>
-      <Input placeholder={elementInstance.extraAttributes?.placeHolder} />
+      <Input
+        placeholder={elementInstance.extraAttributes?.placeHolder}
+        onChange={(e) => setValue(e.target.value)}
+        onBlur={(e) => {
+          console.log(submitValues);
+          if (!submitValues) return;
+          submitValues(elementInstance.id, e.target.value);
+        }}
+        value={value}
+      />
       {elementInstance.extraAttributes?.helperText && (
         <p className='text-muted-foreground text-[0.8rem]'>
           {elementInstance.extraAttributes?.helperText}
