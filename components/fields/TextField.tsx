@@ -24,6 +24,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Switch } from '../ui/switch';
+import { cn } from '@/lib/utils';
 
 const type: ElementsType = 'TextField';
 
@@ -203,30 +204,50 @@ const PropertiesComponent = ({
 const FormComponent = ({
   elementInstance,
   submitValues,
+  isInvalid,
+  defaultValue,
 }: {
   elementInstance: FormElementInstance;
   submitValues?: SubmitFunction;
+  isInvalid?: boolean;
+  defaultValue?: string;
 }) => {
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState(defaultValue || '');
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    setError(isInvalid === true);
+  }, [isInvalid]);
 
   return (
     <div className='flex flex-col gap-2 w-full'>
-      <Label>
+      <Label className={cn(error && 'text-red-500')}>
         {elementInstance.extraAttributes?.label}
         {elementInstance.extraAttributes?.required && '*'}
       </Label>
       <Input
+        className={cn(error && 'border-red-500')}
         placeholder={elementInstance.extraAttributes?.placeHolder}
         onChange={(e) => setValue(e.target.value)}
         onBlur={(e) => {
-          console.log(submitValues);
           if (!submitValues) return;
+          const valid = TextFieldFormElement.validate(
+            elementInstance,
+            e.target.value
+          );
+          setError(!valid);
+          if (!valid) return;
           submitValues(elementInstance.id, e.target.value);
         }}
         value={value}
       />
       {elementInstance.extraAttributes?.helperText && (
-        <p className='text-muted-foreground text-[0.8rem]'>
+        <p
+          className={cn(
+            'text-muted-foreground text-[0.8rem]',
+            error && 'text-red-500'
+          )}
+        >
           {elementInstance.extraAttributes?.helperText}
         </p>
       )}
@@ -253,4 +274,19 @@ export const TextFieldFormElement: FormElement = {
   designerComponent: DesignerComponent,
   formComponent: FormComponent,
   propertiesComponent: PropertiesComponent,
+
+  validate: (
+    formElement: FormElementInstance,
+    currentValue: string
+  ): boolean => {
+    const element = formElement;
+
+    // check if the required field is filled out
+    if (element.extraAttributes?.required) {
+      return currentValue.length > 0;
+    }
+
+    // if not required then its true
+    return true;
+  },
 };

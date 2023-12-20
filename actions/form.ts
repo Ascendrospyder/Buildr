@@ -162,3 +162,28 @@ export const GetFormContentByUrl = async (formUrl: string) => {
     },
   });
 };
+
+export const SubmitFormToDB = async(formUrl: string, dataToSend: string) => {
+  const user = await currentUser();
+
+  if (!user) {
+    throw new UserNotFoundErr();
+  }
+
+  return await prisma.form.update({
+    data: {
+      submissions: {
+        increment: 1
+      },
+      FormSubmissions: {
+        create: {
+          content: dataToSend
+        }
+      }
+    },
+    where: {
+      shareURL: formUrl,
+      
+    }
+  })
+}
