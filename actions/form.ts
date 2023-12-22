@@ -163,7 +163,7 @@ export const GetFormContentByUrl = async (formUrl: string) => {
   });
 };
 
-export const SubmitFormToDB = async(formUrl: string, dataToSend: string) => {
+export const SubmitFormToDB = async (formUrl: string, dataToSend: string) => {
   const user = await currentUser();
 
   if (!user) {
@@ -173,17 +173,35 @@ export const SubmitFormToDB = async(formUrl: string, dataToSend: string) => {
   return await prisma.form.update({
     data: {
       submissions: {
-        increment: 1
+        increment: 1,
       },
       FormSubmissions: {
         create: {
-          content: dataToSend
-        }
-      }
+          content: dataToSend,
+        },
+      },
     },
     where: {
       shareURL: formUrl,
-      
+      published: true,
+    },
+  });
+};
+
+export const GetFormWithSubmissions = async (id: number) => {
+  const user = await currentUser();
+
+  if (!user) {
+    throw new UserNotFoundErr();
+  }
+
+  return prisma.form.findUnique({
+    where: {
+      userId: user.id,
+      id,
+    },
+    include: {
+      FormSubmissions: true
     }
-  })
-}
+  });
+};
