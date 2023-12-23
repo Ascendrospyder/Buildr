@@ -1,12 +1,20 @@
 import React from 'react';
 import SidebarBtnElement from './SidebarBtnElement';
 import { FormElements } from './FormElements';
+import { Separator } from './ui/separator';
 
 function FormElementsSidebar() {
   return (
     <div>
-      Elements
-      <SidebarBtnElement formElement={FormElements.TextField} />
+      <p className='text-md text-foreground/50'>Drag and Drop Elements</p>
+      <Separator className='my-3' />
+      <div className='grid grid-cols-1 md:grid-cols-2 gap-3 place-items-center'>
+        <p className='text-sm text-muted-foreground col-span-1 md:col-span-2 my-2 place-self-center'>
+          Layout Elements
+        </p>
+        <SidebarBtnElement formElement={FormElements.TextField} />
+        <SidebarBtnElement formElement={FormElements.TitleField} />
+      </div>
     </div>
   );
 }
