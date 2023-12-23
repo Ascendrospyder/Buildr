@@ -6,7 +6,7 @@ import {
   FormElementInstance,
   SubmitFunction,
 } from '../FormElements';
-import { MdOutlineTitle } from 'react-icons/md';
+import { MdOutlineSubtitles } from 'react-icons/md';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { z } from 'zod';
@@ -27,10 +27,10 @@ import { Switch } from '../ui/switch';
 import { cn } from '@/lib/utils';
 import { title } from 'process';
 
-const type: ElementsType = 'TitleField';
+const type: ElementsType = 'SubtitleField';
 
 const propertiesSchema = z.object({
-  title: z.string().min(3).max(50),
+  subtitle: z.string().min(3).max(50),
 });
 
 const DesignerComponent = ({
@@ -40,8 +40,8 @@ const DesignerComponent = ({
 }) => {
   return (
     <div className='flex flex-col gap-2 w-full'>
-      <Label className='text-muted-foreground'>Title Field</Label>
-      <p className='text-xl'>{elementInstance.extraAttributes?.title}</p>
+      <Label className='text-muted-foreground'>Subtitle Field</Label>
+      <p className='text-lg'>{elementInstance.extraAttributes?.subtitle}</p>
     </div>
   );
 };
@@ -59,7 +59,7 @@ const PropertiesComponent = ({
     resolver: zodResolver(propertiesSchema),
     mode: 'onBlur',
     defaultValues: {
-      title: elementInstance.extraAttributes?.title,
+      subtitle: elementInstance.extraAttributes?.subtitle,
     },
   });
 
@@ -71,7 +71,7 @@ const PropertiesComponent = ({
     updateElement(elementInstance.id, {
       ...elementInstance,
       extraAttributes: {
-        title: values.title,
+        subtitle: values.subtitle,
       },
     });
   };
@@ -87,10 +87,10 @@ const PropertiesComponent = ({
       >
         <FormField
           control={form.control}
-          name='title'
+          name='subtitle'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Title</FormLabel>
+              <FormLabel>Subtitle</FormLabel>
               <FormControl>
                 <Input
                   {...field}
@@ -113,21 +113,21 @@ const FormComponent = ({
 }: {
   elementInstance: FormElementInstance;
 }) => {
-  return <p className='text-xl'>{elementInstance.extraAttributes?.title}</p>;
+  return <p className='text-lg'>{elementInstance.extraAttributes?.subtitle}</p>;
 };
 
-export const TitleFieldFormElement: FormElement = {
+export const SubtitleFieldFormElement: FormElement = {
   type,
   construct: (id: string) => ({
     id,
     type,
     extraAttributes: {
-      title: 'Title Field',
+      title: 'Subtitle Field',
     },
   }),
   designerBtnElement: {
-    icon: MdOutlineTitle,
-    label: 'Title',
+    icon: MdOutlineSubtitles,
+    label: 'Subtitle',
   },
   designerComponent: DesignerComponent,
   formComponent: FormComponent,
