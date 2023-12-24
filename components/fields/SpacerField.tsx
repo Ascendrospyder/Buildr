@@ -4,11 +4,9 @@ import {
   ElementsType,
   FormElement,
   FormElementInstance,
-  SubmitFunction,
 } from '../FormElements';
 import { MdHeight } from 'react-icons/md';
 import { Label } from '../ui/label';
-import { Input } from '../ui/input';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -23,9 +21,6 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Switch } from '../ui/switch';
-import { cn } from '@/lib/utils';
-import { title } from 'process';
 import { Slider } from '../ui/slider';
 import Box from '@mui/material/Box';
 

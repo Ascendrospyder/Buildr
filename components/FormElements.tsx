@@ -1,3 +1,4 @@
+import { NumberFieldFormElement } from './fields/NumberField';
 import { ParagraphFieldFormElement } from './fields/ParagraphField';
 import { SeparatorFieldFormElement } from './fields/SeparatorField';
 import { SpacerFieldFormElement } from './fields/SpacerField';
@@ -11,7 +12,8 @@ export type ElementsType =
   | 'SubtitleField'
   | 'ParagraphField'
   | 'SeparatorField'
-  | 'SpacerField';
+  | 'SpacerField'
+  | 'NumberField';
 
 export type SubmitFunction = (key: string, value: string) => void;
 
@@ -58,4 +60,5 @@ export const FormElements: FormElementsType = {
   ParagraphField: ParagraphFieldFormElement,
   SeparatorField: SeparatorFieldFormElement,
   SpacerField: SpacerFieldFormElement,
+  NumberField: NumberFieldFormElement,
 };
