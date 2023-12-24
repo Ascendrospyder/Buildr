@@ -1,31 +1,24 @@
 import {
   GetFormFromDbId,
-  GetFormWithSubmissions,
-  GetFormsFromDB,
+  GetFormWithSubmissions
 } from '@/actions/form';
-import FormBuildr from '@/components/FormBuildr';
 import FormLinkShare from '@/components/FormLinkShare';
 import VisitBtn from '@/components/VisitBtn';
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { StatCard } from '../../page';
 import { LuView } from 'react-icons/lu';
 import { IoIosSend } from 'react-icons/io';
 import { FaBalanceScaleLeft } from 'react-icons/fa';
 import { MdDoNotTouch } from 'react-icons/md';
 import {
-  ElementsType,
-  FormElement,
-  FormElementInstance,
-  FormElements,
+  ElementsType, FormElementInstance
 } from '../../../../components/FormElements';
 import {
   Table,
-  TableBody,
-  TableCaption,
-  TableCell,
+  TableBody, TableCell,
   TableHead,
   TableHeader,
-  TableRow,
+  TableRow
 } from '@/components/ui/table';
 import { format, formatDistance } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
