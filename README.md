@@ -51,7 +51,7 @@ To set up Prisma for database connectivity, ensure you have the necessary Prisma
 
 ## Deployment
 
-The application is deployed on [Vercel](https://vercel.com/), ensuring seamless accessibility. If you wish to view the application in real-time click [here!](buildr-eight.vercel.app/)
+The application is deployed on [Vercel](https://vercel.com/), ensuring seamless accessibility. If you wish to view the application in real-time click [here!](https://buildr-eight.vercel.app/)
 
 ## What I learned
 
